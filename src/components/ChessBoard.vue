@@ -6,8 +6,7 @@
                 :key="square"
                 :class="[
                     'w-14 h-14 flex items-center justify-center relative transition-colors',
-                    getSquareColor(index),
-                    isSelected(square) ? 'bg-gray-400' : '',
+                    getSquareColor(square, index),
                     interactive ? 'cursor-pointer' : '',
                 ]"
                 @click="handleClick(square)"
@@ -19,19 +18,20 @@
 </template>
 
 <script setup>
-    import { computed, ref, watch } from 'vue'
+    import { computed, watch } from 'vue'
     import ChessPiece from './ChessPiece.vue'
     import { getBoardFromFEN } from '@/utils/chess.js'
 
     const props = defineProps({
-        fen: { type: String, required: false },
+        fen: { type: String, required: true },
         interactive: { type: Boolean, default: false },
+        selected: { type: String, default: null },
+        lastMoved: { type: Array, default: () => [] }, // puede ser 1 o 2 casillas
     })
 
     const emit = defineEmits(['move'])
 
-    const selected = ref(null)
-    const board = ref({})
+    const board = computed(() => getBoardFromFEN(props.fen))
 
     // Generar casillas A8-H1
     const squares = computed(() => {
@@ -40,35 +40,40 @@
         return rows.flatMap((r) => cols.map((c) => c + r))
     })
 
-    // Actualizar el tablero cuando cambia el FEN
-    watch(
-        () => props.fen,
-        (newFen) => {
-            board.value = getBoardFromFEN(newFen)
-        },
-        { immediate: true },
-    )
+    function getSquareColor(square, index) {
+        const row = Math.floor(index / 8)
+        const col = index % 8
+        const isLight = (row + col) % 2 === 0
 
-    function getSquareColor(i) {
-        const row = Math.floor(i / 8)
-        const col = i % 8
-        return (row + col) % 2 === 0 ? 'bg-orange-800/80' : 'bg-orange-200/80'
+        // Colores base
+        const lightColor = 'bg-orange-200/80'
+        const darkColor = 'bg-orange-800/80'
+
+        // Colores seleccionados
+        const selectedLight = 'bg-yellow-300/80'
+        const selectedDark = 'bg-yellow-600/80'
+
+        // Colores último movimiento
+        const lastMovedLight = 'bg-orange-300'
+        const lastMovedDark = 'bg-amber-700/80'
+
+        if (square === props.selected) {
+            return isLight ? selectedLight : selectedDark
+        } else if (props.lastMoved.includes(square)) {
+            return isLight ? lastMovedLight : lastMovedDark
+        } else {
+            return isLight ? lightColor : darkColor
+        }
     }
 
     function handleClick(square) {
         if (!props.interactive) return
 
-        if (selected.value) {
-            // Emitir movimiento al padre
-            emit('move', { from: selected.value, to: square })
-            selected.value = null
+        // Solo emitir si hay selección previa o si la casilla tiene pieza
+        if (props.selected) {
+            emit('move', { from: props.selected, to: square })
         } else if (board.value[square]) {
-            // Seleccionar pieza si hay una
-            selected.value = square
+            emit('move', { from: square, to: null })
         }
-    }
-
-    function isSelected(square) {
-        return selected.value === square
     }
 </script>

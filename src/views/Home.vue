@@ -1,16 +1,19 @@
 <template>
-    <ChessBoard interactive />
-    <Button class="btn btn-delete w-40" @click="loading = !loading" :loading="loading">
-        <Trash class="w-5 h-5" />
-        Eliminar
-    </Button>
+    <div class="p-6">
+        <ChessBoard :fen="fen1" :interactive="true" selected="C7" :lastMoved="['D2', 'D4']" />
+        <ChessBoard :fen="fen2" :interactive="true" selected="C2" :lastMoved="['D7', 'D5']" />
+    </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+    import { makeMove, INITIAL_FEN } from '@/utils/chess.js'
     import ChessBoard from '@/components/ChessBoard.vue'
-    import Button from '@/components/common/Button.vue'
-    import { Trash } from 'lucide-vue-next'
 
-    const loading = ref(false)
+    let fen = INITIAL_FEN
+
+    // Mover peón blanco de D2 a D4
+    const fen1 = makeMove(fen, 'D2', 'D4')
+
+    // Mover peón negro de D7 a D5
+    const fen2 = makeMove(fen1, 'D7', 'D5')
 </script>
