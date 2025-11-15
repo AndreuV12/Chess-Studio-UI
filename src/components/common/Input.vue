@@ -1,43 +1,96 @@
 <template>
-    <div
-        class="flex items-center rounded-md p-2 border border-gray-300 bg-gray-50 gap-2 min-w-[200px]"
-        :class="disabled ? 'opacity-50 bg-gray-200' : 'focus-within:border-gray-400'"
-    >
-        <slot name="icon-start"></slot>
+	<div
+		class="w-0 min-w-[120px] h-[2rem] flex items-center bg-gray-100 rounded-md py-1 border border-transparent focus-within:border-gray-400 px-2"
+	>
+		<slot name="icon"></slot>
 
-        <input v-model="internalValue" class="outline-none flex-1 w-0" :disabled="disabled" v-bind="$attrs" />
-        <div class="ml-auto flex items-center gap-1">
-            <X
-                v-if="clearable && internalValue"
-                @click="internalValue = null"
-                class="w-6 h-6 opacity-50 hover:bg-gray-200 p-1 rounded-full cursor-pointer"
-            ></X>
-            <slot name="icon-end"></slot>
-        </div>
-    </div>
+		<input
+			ref="inputEl"
+			:type="props.typeInput"
+			:placeholder="props.placeholder ?? ''"
+			:value="value"
+			:disabled="props.disabled"
+			:required="props.required ?? false"
+			:maxlength="props.maxlength"
+			:max="props.max"
+			@input="onInput"
+			@keydown.enter.prevent="onEnter"
+			@focus="$emit('focus')"
+			@blur="$emit('blur')"
+			class="text-sm bg-transparent outline-none w-full ms-1"
+		/>
+
+		<button
+			type="button"
+			v-if="props.clearable && value"
+			class="text-gray-400 hover:text-gray-600"
+			@click.stop="onClear"
+		>
+			<X class="w-4 h-4" />
+		</button>
+	</div>
 </template>
 
 <script setup>
-    import { ref, watch } from 'vue'
-    import { X } from 'lucide-vue-next'
+import { ref, watch } from "vue";
+import { X } from "lucide-vue-next";
 
-    const props = defineProps({
-        modelValue: { type: String, default: '' },
-        disabled: { type: Boolean, default: false },
-        clearable: { type: Boolean, default: false },
-    })
+const props = defineProps({
+	modelValue: String|Number, // ✅ v-model
+	typeInput: { type: String, default: "text" },
+	placeholder: String,
+	disabled: Boolean,
+	clearable: Boolean,
+	required: Boolean,
+	max: { type: Number, default: null },
+	maxlength: { type: Number, default: 30 },
+	debounce: { type: Number, default: 0 }, // ⏱ tiempo en ms
+});
 
-    const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue", "submit", "clear", "focus", "blur"]);
 
-    const internalValue = ref(props.modelValue || '')
+const value = ref(props.modelValue ?? "");
+let debounceTimer = null;
 
-    watch(
-        () => props.modelValue,
-        (val) => {
-            internalValue.value = val
-        },
-    )
-    watch(internalValue, (val) => {
-        emit('update:modelValue', val || null)
-    })
+// 🔁 mantener sincronizado el valor externo ↔ interno
+watch(
+	() => props.modelValue,
+	(v) => {
+		if (v !== value.value) value.value = v ?? "";
+	}
+);
+
+const inputEl = ref(null);
+
+function onInput(e) {
+	const v = e.target.value;
+	value.value = v;
+
+	// Si no hay debounce, emitir al momento
+	if (!props.debounce || props.debounce <= 0) {
+		emit("update:modelValue", v);
+		return;
+	}
+
+	// Si hay debounce, limpiar y esperar
+	clearTimeout(debounceTimer);
+	debounceTimer = setTimeout(() => {
+		emit("update:modelValue", v);
+	}, props.debounce);
+}
+
+function onEnter() {
+	// forzar flush inmediato al presionar enter
+	clearTimeout(debounceTimer);
+	emit("update:modelValue", value.value);
+	emit("submit", value.value);
+}
+
+function onClear() {
+	clearTimeout(debounceTimer);
+	value.value = "";
+	emit("update:modelValue", "");
+	emit("clear");
+	inputEl.value?.focus();
+}
 </script>

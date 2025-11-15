@@ -1,9 +1,4 @@
-import {
-  move,
-  status,
-  moves,
-  importFEN
-} from 'js-chess-engine'
+import { move, status, moves, Game } from 'js-chess-engine'
 
 // FEN inicial del tablero
 export const INITIAL_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -16,7 +11,7 @@ export const INITIAL_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -
  * @returns {string} Nuevo FEN
  */
 export function makeMove(fen, from, to) {
-  return move(fen, from, to)
+    return move(fen, from, to)
 }
 
 /**
@@ -25,7 +20,7 @@ export function makeMove(fen, from, to) {
  * @returns {object} { E2: ["E3","E4"], G1: ["F3","H3"], ... }
  */
 export function getLegalMoves(fen) {
-  return moves(fen)
+    return moves(fen)
 }
 
 /**
@@ -34,7 +29,7 @@ export function getLegalMoves(fen) {
  * @returns {object}
  */
 export function getStatus(fen) {
-  return status(fen)
+    return status(fen)
 }
 
 /**
@@ -43,6 +38,10 @@ export function getStatus(fen) {
  * @returns {object} piezas por coordenada
  */
 export function getBoardFromFEN(fen) {
-  const { pieces } = importFEN(fen)
-  return pieces
+    function importFEN(fen) {
+        const game = new Game(fen)
+        return game.exportJson()
+    }
+    const { pieces } = importFEN(fen)
+    return pieces
 }

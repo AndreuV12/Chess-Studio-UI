@@ -1,25 +1,22 @@
 <template>
-    <div class="h-screen flex rounded-xl">
-        <!-- Main content -->
-        <div class="flex-1 flex flex-col overflow-y-auto">
-            <!-- Header -->
-            <Header
-                class="bg-white shadow-sm rounded-lg"
-                :class="[
-                    (deviceType == 'mobile' || deviceType == 'tablet') && 'm-2 p-2',
-                    deviceType == 'desktop' && 'm-4 p-4',
-                ]"
-            ></Header>
+    <div class="min-h-screen flex relative">
+        <!-- Sidebar -->
+        <Sidebar
+            :sidebarOpen="sidebarOpen"
+            @toggle="toggleSidebar"
+            :class="[
+                'fixed inset-y-0 left-0 z-40 w-64 transform bg-white shadow-lg transition-transform duration-300',
+                sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+            ]"
+        />
 
-            <!-- Page content -->
-            <main
-                class="bg-white shadow-sm rounded-lg mt-0 mb-[100px]"
-                :class="[
-                    (deviceType == 'mobile' || deviceType == 'tablet') && 'mx-2 p-2',
-                    deviceType == 'desktop' && 'mx-4 p-4',
-                ]"
-            >
-                <p>Modo actual: {{ deviceType }}</p>
+        <!-- Overlay -->
+        <div v-if="sidebarOpen" class="fixed inset-0 bg-black opacity-30 z-30" @click="toggleSidebar"></div>
+
+        <!-- Contenido principal -->
+        <div class="flex flex-col flex-1 min-w-0 mx-2 sm:mx-4">
+            <Header class="my-2 sm:my-3" @toggle="toggleSidebar"></Header>
+            <main class="flex-1 mb-4 overflow-y-auto">
                 <router-view />
             </main>
         </div>
@@ -27,31 +24,13 @@
 </template>
 
 <script setup>
-    import { ref, onMounted, onBeforeUnmount } from 'vue'
+    import { ref } from 'vue'
+    import Sidebar from '@/layout/Sidebar.vue'
     import Header from '@/layout/Header.vue'
 
-    // ---- Detectar tipo de dispositivo según ancho ----
-    const deviceType = ref('desktop')
+    const sidebarOpen = ref(false)
 
-    function updateDeviceType() {
-        const width = window.innerWidth
-        if (width < 768) {
-            deviceType.value = 'mobile'
-        } else if (width < 1024) {
-            deviceType.value = 'tablet'
-        } else {
-            deviceType.value = 'desktop'
-        }
+    const toggleSidebar = () => {
+        sidebarOpen.value = !sidebarOpen.value
     }
-
-    // Ejecutar al montar
-    onMounted(() => {
-        updateDeviceType()
-        window.addEventListener('resize', updateDeviceType)
-    })
-
-    // Limpiar evento
-    onBeforeUnmount(() => {
-        window.removeEventListener('resize', updateDeviceType)
-    })
 </script>

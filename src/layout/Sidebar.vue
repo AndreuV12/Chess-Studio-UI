@@ -1,114 +1,116 @@
+<!-- src/components/Sidebar.vue -->
 <template>
-    <aside class="sidebar p-4" v-if="showNormalSidebar || showReducedSidebar">
-        <!-- Imagen superior -->
-
-        <div class="mb-6 flex flex-col items-center gap-2 py-2">
-            <img
-                :src="logo"
-                alt="Logo"
-                class="rounded-full bg-white p-2"
-                :class="showNormalSidebar ? 'w-22 h-22' : 'w-12 h-12'"
-            />
-            <h2 v-if="showNormalSidebar" class="text-black font-bold">{{ projectName }}</h2>
+    <div class="shadow bg-base-100 transition-all duration-300 z-120">
+        <div class="flex items-center justify-between py-4 h-[100px]">
+            <div class="flex-1 flex justify-center">
+                <RouterLink to="/">
+                    <template v-if="authStore.activeCompany?.logo">
+                        <img class="w-40" :src="'/logo/' + authStore.activeCompany?.logo" alt="Logo" />
+                    </template>
+                    <template v-else>
+                        <p>Sin logo asignado</p>
+                    </template>
+                </RouterLink>
+            </div>
         </div>
 
-        <!-- Secciones -->
-        <div v-for="(section, index) in sidebarData" :key="index" class="mb-6 flex flex-col">
-            <span v-if="showNormalSidebar" class="text-black font-bold text-sm p-4">{{ section.title }}</span>
-            <ul>
+        <nav class="flex-1 overflow-y-visible">
+            <ul :class="['space-y-6 px-4', sidebarOpen ? '' : 'flex flex-col items-center']">
                 <li
-                    v-for="(link, i) in section.links"
-                    :key="i"
-                    class="mb-1 flex items-center"
-                    :class="showReducedSidebar ? 'justify-center' : ''"
+                    v-for="item in menu"
+                    :key="item.label"
+                    :class="sidebarOpen ? '' : 'flex flex-col items-center gap-2'"
                 >
-                    <router-link :to="link.path">
-                        <!-- Icono -->
-                        <div class="flex items-center rounded-lg hover:bg-gray-200 px-2">
-                            <component :is="link.icon" class="w-6 h-6 m-2" />
-                            <span v-if="showNormalSidebar" class="me-2"> {{ link.label }}</span>
+                    <template
+                        v-if="
+                            authStore.hasPermission(item.permission) &&
+                            item.children.some((c) => authStore.hasPermission(c.permission))
+                        "
+                    >
+                        <div v-if="sidebarOpen" class="px-2 uppercase text-gray-400 mb-1 text-[13px]">
+                            {{ item.label }}
                         </div>
-                    </router-link>
+                        <i v-else class="fa-solid fa-ellipsis text-gray-300"></i>
+
+                        <ul class="space-y-1">
+                            <li
+                                v-for="sub in item.children"
+                                :key="sub.label"
+                                class="py-1 px-0 rounded-lg hover:bg-slate-50"
+                                :class="route.path === sub.path ? 'bg-gray-50' : ''"
+                            >
+                                <template v-if="authStore.hasPermission(sub.permission)">
+                                    <RouterLink
+                                        :to="sub.path"
+                                        class="flex items-center gap-2 px-2 py-1 rounded text-base transition overflow-visible"
+                                    >
+                                        <div
+                                            class="tooltip tooltip-right text-sm"
+                                            :data-tip="sidebarOpen ? '' : sub.label"
+                                        >
+                                            <component :is="sub.icon" class="w-6 h-6 mx-1" />
+                                        </div>
+                                        <span
+                                            v-if="sidebarOpen"
+                                            :class="route.path === sub.path ? 'font-bold' : 'font-medium'"
+                                            class="pt-1 pe-1"
+                                        >
+                                            {{ sub.label }}
+                                        </span>
+                                    </RouterLink>
+                                </template>
+                            </li>
+                        </ul>
+                    </template>
                 </li>
             </ul>
-        </div>
-    </aside>
+        </nav>
+    </div>
 </template>
 
 <script setup>
-    import { Home, User, Settings, HelpCircle, TextCursor, ChevronsUpDown } from 'lucide-vue-next'
-    import logo from '@/assets/logo.png'
+    defineProps(['sidebarOpen'])
+    defineEmits(['toggle'])
 
-    import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue'
+    import { reactive } from 'vue'
+    import { useRoute } from 'vue-router'
+    import { useAuthStore } from '@/stores/auth'
 
-    const props = defineProps({
-        modelValue: {
-            type: Boolean,
-            default: false,
-        },
-    })
+    const authStore = useAuthStore()
 
-    const emit = defineEmits(['update:modelValue'])
+    import { House, LayoutDashboard, Map, Clipboard } from 'lucide-vue-next'
 
-    const projectName = 'Mi Portafolio'
-    const sidebarData = [
+    const route = useRoute()
+
+    // Permission can be declard on items and children
+    // When no permission is set, will be accessibe
+    // When no children is accessible, item will be hidden
+
+    const menu = reactive([
         {
-            title: 'Personal',
-            links: [
-                { label: 'Inicio', path: '/', icon: Home },
-                { label: 'Sobre mi', path: '/about', icon: User },
-                { label: 'Contacto', path: '/contact', icon: User },
+            label: null,
+            children: [
+                {
+                    label: 'Inicio',
+                    path: '/',
+                    icon: House,
+                },
+                {
+                    label: 'Dashboard',
+                    path: '/dashboard',
+                    icon: LayoutDashboard,
+                },
+                {
+                    label: 'Monitoreo',
+                    path: '/monitoring',
+                    icon: Map,
+                },
+                {
+                    label: 'Reportes',
+                    path: '/reports',
+                    icon: Clipboard,
+                },
             ],
         },
-        {
-            title: 'Componentes',
-            links: [
-                { label: 'Input', path: '/components/input', icon: TextCursor },
-                { label: 'Select', path: '/components/select', icon: ChevronsUpDown },
-            ],
-        },
-    ]
-
-    const breakpoint = 768
-    const windowWith = ref(window.innerWidth)
-
-    const isMobile = computed(() => windowWith.value < breakpoint)
-    const isCollapsed = ref(props.modelValue)
-
-    const showNormalSidebar = computed(() => !isMobile.value && !isCollapsed.value)
-    const showReducedSidebar = computed(() => isMobile.value || isCollapsed.value)
-
-    // Abrir cerrar desde el padre
-    watch(
-        () => props.modelValue,
-        (val) => {
-            isCollapsed.value = val
-        },
-    )
-
-    // Notificar cambios de estado al padre
-    watch(isMobile, (val) => {
-        // Abrir cerrar al redimensionar
-        if (val) {
-            isCollapsed.value = true
-        } else {
-            isCollapsed.value = false
-        }
-    })
-
-    watch(isCollapsed, (val) => {
-        emit('update:modelValue', val)
-    })
-
-    onMounted(() => {
-        if (isMobile.value) {
-            isCollapsed.value = true
-        }
-        window.addEventListener('resize', () => {
-            windowWith.value = window.innerWidth
-        })
-    })
-    onBeforeUnmount(() => {
-        window.removeEventListener('resize')
-    })
+    ])
 </script>
