@@ -21,12 +21,7 @@
                     :key="item.label"
                     :class="sidebarOpen ? '' : 'flex flex-col items-center gap-2'"
                 >
-                    <template
-                        v-if="
-                            authStore.hasPermission(item.permission) &&
-                            item.children.some((c) => authStore.hasPermission(c.permission))
-                        "
-                    >
+                    <template>
                         <div v-if="sidebarOpen" class="px-2 uppercase text-gray-400 mb-1 text-[13px]">
                             {{ item.label }}
                         </div>
@@ -39,26 +34,21 @@
                                 class="py-1 px-0 rounded-lg hover:bg-slate-50"
                                 :class="route.path === sub.path ? 'bg-gray-50' : ''"
                             >
-                                <template v-if="authStore.hasPermission(sub.permission)">
-                                    <RouterLink
-                                        :to="sub.path"
-                                        class="flex items-center gap-2 px-2 py-1 rounded text-base transition overflow-visible"
+                                <RouterLink
+                                    :to="sub.path"
+                                    class="flex items-center gap-2 px-2 py-1 rounded text-base transition overflow-visible"
+                                >
+                                    <div class="tooltip tooltip-right text-sm" :data-tip="sidebarOpen ? '' : sub.label">
+                                        <component :is="sub.icon" class="w-6 h-6 mx-1" />
+                                    </div>
+                                    <span
+                                        v-if="sidebarOpen"
+                                        :class="route.path === sub.path ? 'font-bold' : 'font-medium'"
+                                        class="pt-1 pe-1"
                                     >
-                                        <div
-                                            class="tooltip tooltip-right text-sm"
-                                            :data-tip="sidebarOpen ? '' : sub.label"
-                                        >
-                                            <component :is="sub.icon" class="w-6 h-6 mx-1" />
-                                        </div>
-                                        <span
-                                            v-if="sidebarOpen"
-                                            :class="route.path === sub.path ? 'font-bold' : 'font-medium'"
-                                            class="pt-1 pe-1"
-                                        >
-                                            {{ sub.label }}
-                                        </span>
-                                    </RouterLink>
-                                </template>
+                                        {{ sub.label }}
+                                    </span>
+                                </RouterLink>
                             </li>
                         </ul>
                     </template>
