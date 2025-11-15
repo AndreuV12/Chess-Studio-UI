@@ -24,7 +24,7 @@
     import { getBoardFromFEN } from '@/utils/chess.js'
 
     const props = defineProps({
-        fen: { type: String, required: true },
+        fen: { type: String, required: false },
         interactive: { type: Boolean, default: false },
     })
 
