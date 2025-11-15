@@ -24,7 +24,7 @@ body {
   }
 
   .btn-delete {
-    @apply bg-red-500 hover:bg-red-600 text-white ;
+    @apply bg-red-600 hover:bg-red-700 text-white ;
   }
 
   .btn-action {

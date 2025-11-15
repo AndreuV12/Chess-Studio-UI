@@ -1,8 +1,8 @@
 <template>
     <ChessBoard interactive />
-    <Button class="btn btn-create" @click="loading = !loading" :loading="loading">
+    <Button class="btn btn-delete w-40" @click="loading = !loading" :loading="loading">
         <Trash class="w-5 h-5" />
-        Test del boto
+        Eliminar
     </Button>
 </template>
 
