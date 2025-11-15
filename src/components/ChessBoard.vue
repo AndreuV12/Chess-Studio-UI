@@ -7,7 +7,7 @@
                 :class="[
                     'w-14 h-14 flex items-center justify-center relative transition-colors',
                     getSquareColor(index),
-                    isSelected(square) ? 'ring-4 ring-yellow-400' : '',
+                    isSelected(square) ? 'bg-gray-400' : '',
                     interactive ? 'cursor-pointer' : '',
                 ]"
                 @click="handleClick(square)"
@@ -52,7 +52,7 @@
     function getSquareColor(i) {
         const row = Math.floor(i / 8)
         const col = i % 8
-        return (row + col) % 2 === 0 ? 'bg-amber-200' : 'bg-green-600'
+        return (row + col) % 2 === 0 ? 'bg-orange-800/80' : 'bg-orange-200/80'
     }
 
     function handleClick(square) {
