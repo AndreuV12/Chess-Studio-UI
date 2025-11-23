@@ -1,5 +1,5 @@
 <template>
-    <div class="p-6">
+    <div class="p-6 flex gap-4">
         <ChessBoard :fen="fen1" :interactive="true" selected="C7" :lastMoved="['D2', 'D4']" />
         <ChessBoard :fen="fen2" :interactive="true" selected="C2" :lastMoved="['D7', 'D5']" />
     </div>
