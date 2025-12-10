@@ -1,6 +1,7 @@
 <template>
     <button
         v-bind="$attrs"
+        :type="type"
         :class="[
             'flex items-center justify-center gap-2 font-semibold',
             // padding y borde redondo por defecto
@@ -23,6 +24,7 @@
     import { computed } from 'vue'
 
     const props = defineProps({
+        type: { type: String, default: 'button' },
         loading: { type: Boolean, default: false },
         variant: { type: String, default: 'default' },
         class: { type: String, default: '' },
