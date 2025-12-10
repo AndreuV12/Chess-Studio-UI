@@ -15,7 +15,7 @@
 
     const props = defineProps({
         fen: { type: String, default: INITIAL_FEN },
-        lastMove: { type: Array, default: null }, // puede no pasarse
+        lastMove: { type: Array, default: null },
         rotated: { type: Boolean, default: false },
     })
 
@@ -69,9 +69,9 @@
 
         // Movimiento legal
         localFEN.value = makeMove(localFEN.value, from, square)
-        emit('move', [from, square])
-        // Si el padre controla lastMove, no tocamos el interno
-        // Si no lo controla, lo actualizamos y se emite por watch
+        let uciMove = (from + square).toLowerCase()
+        emit('move', uciMove)
+
         if (props.lastMove === null) {
             internalLastMove.value = [from, square]
         }
