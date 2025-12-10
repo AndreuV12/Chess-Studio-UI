@@ -15,7 +15,7 @@
                 class="flex flex-col p-4 border-1 border-gray-200 bg-white rounded-lg shadow gap-2 cursor-pointer hover:shadow-lg hover:bg-gray-50"
                 @click="goToOpening(opening.id)"
             >
-                <span class="font-medium text-black">{{ opening.name }}</span>
+                <span class="font-semibold">{{ opening.name }}</span>
                 <ChessBoard />
             </div>
         </div>

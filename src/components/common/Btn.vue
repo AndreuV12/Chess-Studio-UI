@@ -4,7 +4,7 @@
         v-on="$attrs"
         :class="[
             // Estilos base
-            'px-4 py-2 rounded-md font-semibold transition-all duration-200 flex items-center justify-center gap-2',
+            'px-4 py-2 rounded-xl font-semibold flex items-center justify-center gap-2',
             // Variante de color
             variantClass,
             // Clases adicionales que quieras pasar
@@ -34,7 +34,7 @@
         const variants = {
             create: 'bg-green-600 text-white hover:bg-green-700',
             edit: 'bg-blue-600 text-white hover:bg-blue-700',
-            action: 'bg-black text-white hover:bg-gray-900',
+            action: 'bg-black text-white hover:bg-gray-700',
             default: 'bg-gray-200 text-black hover:bg-gray-300',
         }
 
