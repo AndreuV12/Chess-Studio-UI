@@ -3,18 +3,19 @@
         v-bind="$attrs"
         v-on="$attrs"
         :class="[
-            // Estilos base
-            'px-4 py-2 rounded-xl font-semibold flex items-center justify-center gap-2',
-            // Variante de color
+            'flex items-center justify-center gap-2 font-semibold',
+            // padding y borde redondo por defecto
+            props.iconOnly ? 'p-2 w-10 h-10 rounded-full' : 'px-4 py-2 rounded-xl',
+            // variante de color
             variantClass,
-            // Clases adicionales que quieras pasar
+            // clases adicionales
             props.class,
-            // Estado loading
+            // estado loading
             loading ? 'opacity-80' : '',
         ]"
     >
-        <LoaderCircle v-if="loading" class="w-6 h-6 animate-spin" />
-        <slot v-else></slot>
+        <slot v-if="!loading"></slot>
+        <LoaderCircle v-else class="w-6 h-6 animate-spin" />
     </button>
 </template>
 
@@ -22,14 +23,13 @@
     import { LoaderCircle } from 'lucide-vue-next'
     import { computed } from 'vue'
 
-    // Props
     const props = defineProps({
         loading: { type: Boolean, default: false },
-        variant: { type: String, default: 'default' }, // nuevo prop
-        class: { type: String, default: '' }, // clases adicionales
+        variant: { type: String, default: 'default' },
+        class: { type: String, default: '' },
+        iconOnly: { type: Boolean, default: false }, // para botones redondos de solo icono
     })
 
-    // Computada para la variante
     const variantClass = computed(() => {
         const variants = {
             create: 'bg-green-600 text-white hover:bg-green-700',
@@ -37,7 +37,6 @@
             action: 'bg-black text-white hover:bg-gray-700',
             default: 'bg-gray-200 text-black hover:bg-gray-300',
         }
-
-        return variants[props.variant] || variants['default']
+        return variants[props.variant] || variants.default
     })
 </script>

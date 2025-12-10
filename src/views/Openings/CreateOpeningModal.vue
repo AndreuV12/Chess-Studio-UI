@@ -37,11 +37,16 @@
                         Posición de que se mostrara en el listado de aperturas. Efectue movimientos para cambiar la
                         posición.</span
                     >
-                    <div class="flex justify-center">
-                        <ChessBoard class="w-1/2" />
+                    <div class="flex justify-center ms-12">
+                        <ChessBoard v-model="form.fen" class="flex-1 max-w-100" />
+                        <div class="w-12">
+                            <Btn iconOnly class="ms-2">
+                                <BrushCleaning class="w-4 h-4" />
+                            </Btn>
+                        </div>
                     </div>
                 </div>
-                {{ form }}
+                {{ form.fen }}
             </div>
         </template>
 
@@ -71,7 +76,9 @@
     import { ref, watch, defineEmits, defineProps, reactive } from 'vue'
     import BaseModal from '@/components/common/BaseModal.vue'
     import Input from '@/components/common/Input.vue'
+    import Btn from '@/components/common/Btn.vue'
 
+    import { BrushCleaning } from 'lucide-vue-next'
     import ChessBoard from '@/components/shared/ChessBoard.vue'
     import { INITIAL_FEN } from '@/utils/chess'
 
