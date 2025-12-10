@@ -3,6 +3,8 @@
 </template>
 
 <script setup>
+    import { computed } from 'vue'
+
     const props = defineProps({
         piece: { type: String, required: true },
     })
@@ -23,6 +25,6 @@
         p: '/src/assets/pieces/black-pawn.svg',
     }
 
-    // Ruta de la imagen según la pieza
-    const src = pieceMap[props.piece] || null
+    // Ruta reactiva según la pieza
+    const src = computed(() => pieceMap[props.piece] || null)
 </script>
