@@ -5,7 +5,7 @@
                 <h1 class="text-2xl font-semibold">Galeria de aperturas</h1>
                 <h2>Explora y edita tus aperturas de ajedrez</h2>
             </div>
-            <Btn class="btn btn-action w-full sm:w-auto">Crear apertura</Btn>
+            <Btn variant="action" class="w-full sm:w-50" :loading="false">Crear apertura</Btn>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
