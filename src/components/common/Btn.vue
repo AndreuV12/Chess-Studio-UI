@@ -1,7 +1,6 @@
 <template>
     <button
         v-bind="$attrs"
-        v-on="$attrs"
         :class="[
             'flex items-center justify-center gap-2 font-semibold',
             // padding y borde redondo por defecto

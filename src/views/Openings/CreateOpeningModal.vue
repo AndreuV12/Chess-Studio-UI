@@ -1,75 +1,96 @@
 <template>
-    <BaseModal v-model="show" class="w-3/4 md:w-1/2">
-        <!-- HEADER -->
-        <template #header>
-            <h3 class="text-2xl font-semibold text-center">Crear apertura</h3>
-        </template>
+    <form @submit.prevent="handleSubmit">
+        <BaseModal v-model="show" class="w-3/4 md:w-1/2">
+            <!-- HEADER -->
+            <template #header>
+                <h3 class="text-2xl font-semibold text-center">Crear apertura</h3>
+            </template>
 
-        <!-- BODY -->
-        <template #body>
-            <div class="flex flex-col gap-2">
-                <div>
-                    <!-- Nombre de la apertura -->
-                    <label class="font-medium">Nombre de la apertura</label>
-                    <div class="flex">
-                        <Input
-                            v-model="form.name"
-                            class="flex flex-1"
-                            placeholder="Introduce el nombre de la apertura"
-                        ></Input>
+            <!-- BODY -->
+            <template #body>
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <!-- Nombre de la apertura -->
+                        <label class="font-medium required">Nombre de la apertura</label>
+                        <div class="flex">
+                            <Input
+                                v-model="form.name"
+                                class="flex flex-1"
+                                placeholder="Introduce el nombre de la apertura"
+                                clearable
+                                required
+                            ></Input>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <!-- Nombre de la apertura -->
-                    <label class="font-medium">Descripción</label>
-                    <div class="flex">
-                        <Input
-                            v-model="form.name"
-                            class="flex flex-1"
-                            placeholder="Introduce una breve descripción de la apertura"
-                        ></Input>
+                    <div>
+                        <!-- Nombre de la apertura -->
+                        <label class="font-medium">Descripción</label>
+                        <div class="flex">
+                            <Input
+                                v-model="form.description"
+                                class="flex flex-1"
+                                placeholder="Introduce una breve descripción de la apertura"
+                                clearable
+                            ></Input>
+                        </div>
                     </div>
-                </div>
-                <div class="flex flex-col">
-                    <!-- Nombre de la apertura -->
-                    <label class="font-medium">Posición de referencia</label>
-                    <span class="mb-2 text-sm text-gray-700/80 italic text-justify">
-                        Posición de que se mostrara en el listado de aperturas. Efectue movimientos para cambiar la
-                        posición.</span
-                    >
-                    <div class="flex justify-center ms-12">
-                        <ChessBoard v-model="form.fen" class="flex-1 max-w-100" />
-                        <div class="w-12">
-                            <Btn iconOnly class="ms-2">
-                                <BrushCleaning class="w-4 h-4" />
-                            </Btn>
+                    <div>
+                        <label class="font-medium">Color</label>
+                        <div class="flex justify-center">
+                            <Tabs
+                                class="flex-1"
+                                v-model="form.color"
+                                :options="[
+                                    {
+                                        value: 'white',
+                                        label: 'Blanco',
+                                        icon: ChessPiece,
+                                        iconProps: { piece: 'K' },
+                                    },
+                                    {
+                                        value: 'black',
+                                        label: 'Negro',
+                                        icon: ChessPiece,
+                                        iconProps: { piece: 'k' },
+                                    },
+                                ]"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <!-- Nombre de la apertura -->
+                        <label class="font-medium">Posición de referencia</label>
+                        <span class="mb-2 text-sm text-gray-700/80 italic text-justify">
+                            Posición de que se mostrara en el listado de aperturas. Efectue movimientos para cambiar la
+                            posición.</span
+                        >
+                        <div class="flex justify-center ms-12">
+                            <ChessBoard
+                                v-model:fen="form.fen"
+                                :rotated="form.color == 'black'"
+                                class="flex-1 max-w-100"
+                            />
+                            <div class="w-12">
+                                <Btn iconOnly class="ms-2" @click="form.fen = INITIAL_FEN">
+                                    <BrushCleaning class="w-4 h-4" />
+                                </Btn>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {{ form.fen }}
-            </div>
-        </template>
+            </template>
 
-        <!-- FOOTER -->
-        <template #footer>
-            <div class="flex justify-end gap-3">
-                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300" @click="show = false">
-                    Cancelar
-                </button>
-                <button
-                    class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 disabled:opacity-60"
-                    :disabled="loading"
-                    @click="emit('confirm', form)"
-                >
-                    <span
-                        v-if="loading"
-                        class="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5 inline-block"
-                    ></span>
-                    <span v-else>Crear</span>
-                </button>
-            </div>
-        </template>
-    </BaseModal>
+            <!-- FOOTER -->
+            <template #footer>
+                <div class="flex justify-end gap-3">
+                    <Btn variant="default" @click="show = false">Cancelar</Btn>
+
+                    <Btn variant="create" :loading="loading" type="submit"> Crear </Btn>
+                </div>
+            </template>
+        </BaseModal>
+    </form>
 </template>
 
 <script setup>
@@ -77,6 +98,8 @@
     import BaseModal from '@/components/common/BaseModal.vue'
     import Input from '@/components/common/Input.vue'
     import Btn from '@/components/common/Btn.vue'
+    import Tabs from '@/components/common/Tabs.vue'
+    import ChessPiece from '@/components/shared/ChessPiece.vue'
 
     import { BrushCleaning } from 'lucide-vue-next'
     import ChessBoard from '@/components/shared/ChessBoard.vue'
@@ -91,9 +114,18 @@
 
     const show = ref(props.modelValue)
     const form = reactive({
-        name: '',
+        name: null,
+        description: null,
         fen: INITIAL_FEN,
+        color: 'white',
     })
+
+    function handleSubmit() {
+        emit('confirm', form)
+        console.log(form)
+
+        show.value = false
+    }
 
     // Sync con el v-model externo
     watch(

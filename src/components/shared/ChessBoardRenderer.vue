@@ -20,6 +20,7 @@
         fen: { type: String, default: INITIAL_FEN },
         selected: { type: String, default: null },
         lastMoved: { type: Array, default: () => [] }, // puede ser 1 o 2 casillas
+        rotated: { type: Boolean, default: false },
     })
 
     const emit = defineEmits(['square-click'])
@@ -28,9 +29,16 @@
 
     // Generar casillas A8-H1
     const squares = computed(() => {
-        const rows = '87654321'.split('')
-        const cols = 'ABCDEFGH'.split('')
-        return rows.flatMap((r) => cols.map((c) => c + r))
+        const rows = '87654321'
+        const cols = 'ABCDEFGH'
+
+        return Array.from({ length: 8 }, (_, r) => r).flatMap((r) =>
+            Array.from({ length: 8 }, (_, c) => {
+                const rowIndex = props.rotated ? 7 - r : r
+                const colIndex = props.rotated ? 7 - c : c
+                return cols[colIndex] + rows[rowIndex]
+            }),
+        )
     })
 
     function getSquareColor(square, index) {

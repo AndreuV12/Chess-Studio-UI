@@ -5,8 +5,8 @@
                 <h1 class="text-2xl font-semibold">Galeria de aperturas</h1>
                 <h2>Explora y edita tus aperturas de ajedrez</h2>
             </div>
-            <Btn variant="action" class="w-full sm:w-50" :loading="false" @click="createOpeningModal.show = true"
-                >Crear apertura</Btn
+            <Btn variant="action" class="w-full sm:w-50" :loading="false" @click="createOpeningModal.show = true">
+                Crear apertura</Btn
             >
         </div>
 

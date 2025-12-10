@@ -2,62 +2,80 @@
     <ChessBoardRenderer
         :fen="localFEN"
         :selected="selectedSquare"
-        :lastMoved="lastMove"
-        :interactive="true"
+        :lastMoved="localLastMove"
+        :rotated="rotated"
         @square-click="handleClick"
     />
 </template>
 
 <script setup>
-    import { ref, watch, defineEmits, defineProps } from 'vue'
+    import { ref, watch, defineEmits, defineProps, computed } from 'vue'
     import ChessBoardRenderer from '@/components/shared/ChessBoardRenderer.vue'
     import { INITIAL_FEN, getLegalMoves, makeMove } from '@/utils/chess.js'
 
     const props = defineProps({
-        modelValue: { type: String, default: INITIAL_FEN }, // v-model:fen
+        fen: { type: String, default: INITIAL_FEN },
+        lastMove: { type: Array, default: null }, // puede no pasarse
+        rotated: { type: Boolean, default: false },
     })
-    const emit = defineEmits(['update:model-value'])
 
-    const localFEN = ref(props.modelValue)
+    const emit = defineEmits(['update:fen', 'update:lastMove'])
+
     const selectedSquare = ref(null)
-    const lastMove = ref([])
+    const localFEN = ref(props.fen)
+    const internalLastMove = ref([])
 
-    // Mantener sincronización con v-model externo
+    const localLastMove = computed(() => {
+        return props.lastMove ?? internalLastMove.value
+    })
+
+    // Sync cuando cambian props externas
     watch(
-        () => props.modelValue,
+        () => props.fen,
         (val) => {
-            if (val !== localFEN.value) localFEN.value = val
+            if (val !== localFEN.value) {
+                localFEN.value = val
+                // SI no viene lastmove cuando se cambia el FEN
+                if (props.lastMove === null) internalLastMove.value = []
+            }
         },
     )
-    watch(localFEN, (val) => emit('update:model-value', val))
+
+    // Emitir cuando se hacen movimientos
+    watch(localFEN, (val) => emit('update:fen', val))
+    watch(internalLastMove, (val) => {
+        if (props.lastMove === null) {
+            emit('update:lastMove', val)
+        }
+    })
 
     function handleClick(square) {
-        console.log('square clicked', square)
-
         const legalMoves = getLegalMoves(localFEN.value)
 
-        // Si no hay pieza seleccionada
+        // Nada seleccionado
         if (!selectedSquare.value) {
-            if (!legalMoves[square]) return // No hay pieza en esa casilla → nada que hacer
+            if (!legalMoves[square]) return
             selectedSquare.value = square
             return
         }
 
-        // Si hay una pieza seleccionada
         const from = selectedSquare.value
         const possible = legalMoves[from] || []
 
         if (!possible.includes(square)) {
-            // Movimiento ilegal → limpiar selección
             selectedSquare.value = null
             return
         }
 
-        // Movimiento legal → aplicar
+        // Movimiento legal
         localFEN.value = makeMove(localFEN.value, from, square)
-        lastMove.value = [from, square]
 
-        // Reset selección
+        // Si el padre controla lastMove, no tocamos el interno
+        // Si no lo controla, lo actualizamos y se emite por watch
+        if (props.lastMove === null) {
+            internalLastMove.value = [from, square]
+        }
+
         selectedSquare.value = null
     }
 </script>
