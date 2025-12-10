@@ -21,7 +21,11 @@
                 <ChessBoard />
             </div>
         </div>
-        <CreateOpeningModal v-model="createOpeningModal.show" :loading="createOpeningModal.loading" />
+        <CreateOpeningModal
+            v-model="createOpeningModal.show"
+            :loading="createOpeningModal.loading"
+            @confirm="createOpening"
+        />
     </div>
 </template>
 
@@ -43,6 +47,13 @@
         show: false,
         loading: false,
     })
+
+    async function createOpening(opeing) {
+        createOpeningModal.loading = true
+        const newOpening = await openings_api.create(opeing)
+        createOpeningModal.show = false
+        createOpeningModal.loading = false
+    }
     onMounted(async () => {
         gallery.loading = true
         gallery.openings = await openings_api.get()

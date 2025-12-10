@@ -123,8 +123,6 @@
     function handleSubmit() {
         emit('confirm', form)
         console.log(form)
-
-        show.value = false
     }
 
     // Sync con el v-model externo
