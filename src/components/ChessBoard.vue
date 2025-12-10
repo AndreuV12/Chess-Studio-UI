@@ -1,18 +1,12 @@
 <template>
-    <div class="inline-block border-4 border-gray-700 rounded-lg overflow-hidden select-none">
-        <div class="grid grid-cols-8">
-            <div
-                v-for="(square, index) in squares"
-                :key="square"
-                :class="[
-                    'w-14 h-14 flex items-center justify-center relative transition-colors',
-                    getSquareColor(square, index),
-                    interactive ? 'cursor-pointer' : '',
-                ]"
-                @click="handleClick(square)"
-            >
-                <ChessPiece v-if="board[square]" :piece="board[square]" />
-            </div>
+    <div class="border-4 border-gray-700 rounded-lg flex flex-wrap aspect-square">
+        <div
+            v-for="(square, index) in squares"
+            :key="square"
+            :class="['h-1/8 w-1/8', getSquareColor(square, index)]"
+            @click="handleClick(square)"
+        >
+            <ChessPiece v-if="board[square]" :piece="board[square]" class="w-full h-full" />
         </div>
     </div>
 </template>

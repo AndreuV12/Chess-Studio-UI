@@ -1,7 +1,5 @@
 <template>
-    <div class="w-12 h-12">
-        <img v-if="src" :src="src" :alt="piece" class="w-full h-full" />
-    </div>
+    <img v-if="src" :src="src" :alt="piece" />
 </template>
 
 <script setup>
