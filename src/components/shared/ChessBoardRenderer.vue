@@ -4,7 +4,7 @@
             v-for="(square, index) in squares"
             :key="square"
             :class="['h-1/8 w-1/8', getSquareColor(square, index)]"
-            @click="handleClick(square)"
+            @click="emit('square-click', square)"
         >
             <ChessPiece v-if="board[square]" :piece="board[square]" class="w-full h-full" />
         </div>
@@ -18,12 +18,11 @@
 
     const props = defineProps({
         fen: { type: String, default: INITIAL_FEN },
-        interactive: { type: Boolean, default: false },
         selected: { type: String, default: null },
         lastMoved: { type: Array, default: () => [] }, // puede ser 1 o 2 casillas
     })
 
-    const emit = defineEmits(['move'])
+    const emit = defineEmits(['square-click'])
 
     const board = computed(() => getBoardFromFEN(props.fen))
 
@@ -57,17 +56,6 @@
             return isLight ? lastMovedLight : lastMovedDark
         } else {
             return isLight ? lightColor : darkColor
-        }
-    }
-
-    function handleClick(square) {
-        if (!props.interactive) return
-
-        // Solo emitir si hay selección previa o si la casilla tiene pieza
-        if (props.selected) {
-            emit('move', { from: props.selected, to: square })
-        } else if (board.value[square]) {
-            emit('move', { from: square, to: null })
         }
     }
 </script>

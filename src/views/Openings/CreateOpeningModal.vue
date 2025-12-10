@@ -38,7 +38,7 @@
                         posición.</span
                     >
                     <div class="flex justify-center">
-                        <ChessBoard class="w-1/2" v-model="form.fen" />
+                        <ChessBoard class="w-1/2" />
                     </div>
                 </div>
                 {{ form }}
@@ -72,7 +72,7 @@
     import BaseModal from '@/components/common/BaseModal.vue'
     import Input from '@/components/common/Input.vue'
 
-    import ChessBoard from '@/components/shared/ChessBoardRenderer.vue'
+    import ChessBoard from '@/components/shared/ChessBoard.vue'
     import { INITIAL_FEN } from '@/utils/chess'
 
     const props = defineProps({

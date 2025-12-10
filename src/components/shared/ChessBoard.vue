@@ -1,23 +1,22 @@
-<!-- src/components/chess/ChessBoard.vue -->
 <template>
     <ChessBoardRenderer
         :fen="localFEN"
         :selected="selectedSquare"
         :lastMoved="lastMove"
         :interactive="true"
-        @click="handleClick"
+        @square-click="handleClick"
     />
 </template>
 
 <script setup>
     import { ref, watch, defineEmits, defineProps } from 'vue'
-    import ChessBoardRenderer from './ChessBoardRenderer.vue'
-    import { makeMove, getLegalMoves, INITIAL_FEN } from '@/utils/chess.js'
+    import ChessBoardRenderer from '@/components/shared/ChessBoardRenderer.vue'
+    import { INITIAL_FEN } from '@/utils/chess.js'
 
     const props = defineProps({
         modelValue: { type: String, default: INITIAL_FEN }, // v-model:fen
     })
-    const emit = defineEmits(['update:modelValue'])
+    const emit = defineEmits(['update:movel-value'])
 
     const localFEN = ref(props.modelValue)
     const selectedSquare = ref(null)
@@ -33,30 +32,32 @@
     watch(localFEN, (val) => emit('update:model-value', val))
 
     function handleClick(square) {
-        const legalMoves = getLegalMoves(localFEN.value)
+        console.log('square clicked', square)
 
-        // Si no hay pieza seleccionada
-        if (!selectedSquare.value) {
-            if (!legalMoves[square]) return // No hay pieza en esa casilla → nada que hacer
-            selectedSquare.value = square
-            return
-        }
+        // const legalMoves = getLegalMoves(localFEN.value)
 
-        // Si hay una pieza seleccionada
-        const from = selectedSquare.value
-        const possible = legalMoves[from] || []
+        // // Si no hay pieza seleccionada
+        // if (!selectedSquare.value) {
+        //     if (!legalMoves[square]) return // No hay pieza en esa casilla → nada que hacer
+        //     selectedSquare.value = square
+        //     return
+        // }
 
-        if (!possible.includes(square)) {
-            // Movimiento ilegal → limpiar selección
-            selectedSquare.value = null
-            return
-        }
+        // // Si hay una pieza seleccionada
+        // const from = selectedSquare.value
+        // const possible = legalMoves[from] || []
 
-        // Movimiento legal → aplicar
-        localFEN.value = makeMove(localFEN.value, from, square)
-        lastMove.value = [from, square]
+        // if (!possible.includes(square)) {
+        //     // Movimiento ilegal → limpiar selección
+        //     selectedSquare.value = null
+        //     return
+        // }
 
-        // Reset selección
-        selectedSquare.value = null
+        // // Movimiento legal → aplicar
+        // localFEN.value = makeMove(localFEN.value, from, square)
+        // lastMove.value = [from, square]
+
+        // // Reset selección
+        // selectedSquare.value = null
     }
 </script>
