@@ -11,13 +11,8 @@ export const auth_api = {
         return response.data
     },
 
-    async getUserCompanies() {
-        const response = await api.get('/auth/companies') // Token needs to be setted on auth_store
-        return response.data
-    },
-
     async getCurrentUser() {
-        const response = await api.get('/auth/me') // Token needs to be setted on auth_store
+        const response = await api.get('/auth/me')
         return response.data
     },
 }

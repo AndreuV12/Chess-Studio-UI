@@ -1,6 +1,6 @@
 <!-- src/components/Sidebar.vue -->
 <template>
-    <div class="shadow bg-base-100 transition-all duration-300 z-120">
+    <div class="shadow bg-base-100 transition-all duration-300 z-120 text-black">
         <div class="flex items-center justify-between py-4 h-[100px]">
             <div class="flex-1 flex justify-center">
                 <RouterLink to="/">
@@ -15,43 +15,19 @@
         </div>
 
         <nav class="flex-1 overflow-y-visible">
-            <ul :class="['space-y-6 px-4', sidebarOpen ? '' : 'flex flex-col items-center']">
-                <li
-                    v-for="item in menu"
-                    :key="item.label"
-                    :class="sidebarOpen ? '' : 'flex flex-col items-center gap-2'"
-                >
-                    <template>
-                        <div v-if="sidebarOpen" class="px-2 uppercase text-gray-400 mb-1 text-[13px]">
-                            {{ item.label }}
+            <ul>
+                <li v-for="item in menu" :key="item.label" class="rounded-lg hover:bg-gray-100 mx-2 my-1">
+                    <RouterLink
+                        :to="item.path"
+                        class="flex items-center gap-2 px-2 py-1 rounded text-base transition overflow-visible"
+                    >
+                        <div class="tooltip tooltip-right text-sm">
+                            <component :is="item.icon" class="w-6 h-6 mx-1" />
                         </div>
-                        <i v-else class="fa-solid fa-ellipsis text-gray-300"></i>
-
-                        <ul class="space-y-1">
-                            <li
-                                v-for="sub in item.children"
-                                :key="sub.label"
-                                class="py-1 px-0 rounded-lg hover:bg-slate-50"
-                                :class="route.path === sub.path ? 'bg-gray-50' : ''"
-                            >
-                                <RouterLink
-                                    :to="sub.path"
-                                    class="flex items-center gap-2 px-2 py-1 rounded text-base transition overflow-visible"
-                                >
-                                    <div class="tooltip tooltip-right text-sm" :data-tip="sidebarOpen ? '' : sub.label">
-                                        <component :is="sub.icon" class="w-6 h-6 mx-1" />
-                                    </div>
-                                    <span
-                                        v-if="sidebarOpen"
-                                        :class="route.path === sub.path ? 'font-bold' : 'font-medium'"
-                                        class="pt-1 pe-1"
-                                    >
-                                        {{ sub.label }}
-                                    </span>
-                                </RouterLink>
-                            </li>
-                        </ul>
-                    </template>
+                        <span :class="route.path === item.path ? 'font-bold' : 'font-medium'" class="pt-1 pe-1">
+                            {{ item.label }}
+                        </span>
+                    </RouterLink>
                 </li>
             </ul>
         </nav>
@@ -59,7 +35,12 @@
 </template>
 
 <script setup>
-    defineProps(['sidebarOpen'])
+    const props = defineProps({
+        sidebarOpen: {
+            type: Boolean,
+            default: false,
+        },
+    })
     defineEmits(['toggle'])
 
     import { reactive } from 'vue'
@@ -72,35 +53,17 @@
 
     const route = useRoute()
 
-    // Permission can be declard on items and children
-    // When no permission is set, will be accessibe
-    // When no children is accessible, item will be hidden
-
     const menu = reactive([
         {
-            label: null,
-            children: [
-                {
-                    label: 'Inicio',
-                    path: '/',
-                    icon: House,
-                },
-                {
-                    label: 'Dashboard',
-                    path: '/dashboard',
-                    icon: LayoutDashboard,
-                },
-                {
-                    label: 'Monitoreo',
-                    path: '/monitoring',
-                    icon: Map,
-                },
-                {
-                    label: 'Reportes',
-                    path: '/reports',
-                    icon: Clipboard,
-                },
-            ],
+            label: 'Galeria',
+            path: '/',
+            icon: House,
+        },
+        {
+            label: 'Editor',
+            path: '/openings',
+            icon: LayoutDashboard,
+            children: [],
         },
     ])
 </script>
