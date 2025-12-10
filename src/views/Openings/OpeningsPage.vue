@@ -21,7 +21,6 @@
                 <ChessBoard />
             </div>
         </div>
-        {{ createOpeningModal.show }}
         <CreateOpeningModal v-model="createOpeningModal.show" :loading="createOpeningModal.loading" />
     </div>
 </template>
@@ -30,7 +29,7 @@
     import { onMounted, reactive } from 'vue'
     import { openings_api } from '@/api'
     // import { makeMove, INITIAL_FEN } from '@/utils/chess.js'
-    import ChessBoard from '@/components/ChessBoard.vue'
+    import ChessBoard from '@/components/shared/ChessBoardRenderer.vue'
     import Btn from '@/components/common/Btn.vue'
 
     import CreateOpeningModal from './CreateOpeningModal.vue'

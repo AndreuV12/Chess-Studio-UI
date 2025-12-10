@@ -7,7 +7,7 @@
 
 <script setup>
     import { makeMove, INITIAL_FEN } from '@/utils/chess.js'
-    import ChessBoard from '@/components/ChessBoard.vue'
+    import ChessBoard from '@/components/shared/ChessBoardRenderer.vue'
 
     let fen = INITIAL_FEN
 

@@ -12,8 +12,8 @@
 </template>
 
 <script setup>
-    import { computed, watch } from 'vue'
-    import ChessPiece from './ChessPiece.vue'
+    import { computed } from 'vue'
+    import ChessPiece from '@/components/shared/ChessPiece.vue'
     import { getBoardFromFEN, INITIAL_FEN } from '@/utils/chess.js'
 
     const props = defineProps({

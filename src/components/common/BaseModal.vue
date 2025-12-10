@@ -24,14 +24,11 @@
             </div>
 
             <!-- BODY -->
-            <div>
-                <slot name="body"></slot>
-            </div>
+
+            <slot name="body"></slot>
 
             <!-- FOOTER -->
-            <div>
-                <slot name="footer"></slot>
-            </div>
+            <slot name="footer"></slot>
         </div>
     </div>
 </template>
