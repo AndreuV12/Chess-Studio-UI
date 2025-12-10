@@ -19,7 +19,7 @@
         rotated: { type: Boolean, default: false },
     })
 
-    const emit = defineEmits(['update:fen', 'update:lastMove'])
+    const emit = defineEmits(['update:fen', 'update:lastMove', 'move'])
 
     const selectedSquare = ref(null)
     const localFEN = ref(props.fen)
@@ -69,7 +69,7 @@
 
         // Movimiento legal
         localFEN.value = makeMove(localFEN.value, from, square)
-
+        emit('move', [from, square])
         // Si el padre controla lastMove, no tocamos el interno
         // Si no lo controla, lo actualizamos y se emite por watch
         if (props.lastMove === null) {

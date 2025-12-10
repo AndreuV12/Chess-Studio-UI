@@ -70,9 +70,10 @@
                                 v-model:fen="form.fen"
                                 :rotated="form.color == 'black'"
                                 class="flex-1 max-w-100"
+                                @move="handleMove"
                             />
                             <div class="w-12">
-                                <Btn iconOnly class="ms-2" @click="form.fen = INITIAL_FEN">
+                                <Btn iconOnly class="ms-2" @click="clearBoard">
                                     <BrushCleaning class="w-4 h-4" />
                                 </Btn>
                             </div>
@@ -118,7 +119,17 @@
         description: null,
         fen: INITIAL_FEN,
         color: 'white',
+        moves: [],
     })
+
+    function handleMove(move) {
+        form.moves.push(move)
+    }
+
+    function clearBoard() {
+        form.fen = INITIAL_FEN
+        form.moves = []
+    }
 
     function handleSubmit() {
         emit('confirm', form)

@@ -6,8 +6,8 @@ export const openings_api = {
         return response.data
     },
 
-    async create({ name, description, fen, color }) {
-        const response = await api.post('/openings', { name, description, fen, color })
+    async create({ name, description, fen, color, moves }) {
+        const response = await api.post('/openings', { name, description, fen, color, moves })
         return response.data
     },
 }

@@ -10,7 +10,7 @@
             >
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             <div
                 v-for="opening in gallery.openings"
                 :key="opening.id"
@@ -18,7 +18,7 @@
                 @click="goToOpening(opening.id)"
             >
                 <span class="font-semibold">{{ opening.name }}</span>
-                <ChessBoard />
+                <ChessBoard :fen="opening.fen" :rotated="opening.color = 'black'" />
             </div>
         </div>
         <CreateOpeningModal
@@ -48,11 +48,17 @@
         loading: false,
     })
 
-    async function createOpening(opeing) {
-        createOpeningModal.loading = true
-        const newOpening = await openings_api.create(opeing)
-        createOpeningModal.show = false
-        createOpeningModal.loading = false
+    async function createOpening(opening) {
+        try {
+            createOpeningModal.loading = true
+            const newOpening = await openings_api.create(opening)
+            gallery.openings.push(newOpening)
+            createOpeningModal.show = false
+        } catch (error) {
+            console.error(error)
+        } finally {
+            createOpeningModal.loading = false
+        }
     }
     onMounted(async () => {
         gallery.loading = true
