@@ -14,10 +14,10 @@
 <script setup>
     import { computed, watch } from 'vue'
     import ChessPiece from './ChessPiece.vue'
-    import { getBoardFromFEN } from '@/utils/chess.js'
+    import { getBoardFromFEN, INITIAL_FEN } from '@/utils/chess.js'
 
     const props = defineProps({
-        fen: { type: String, required: true },
+        fen: { type: String, default: INITIAL_FEN },
         interactive: { type: Boolean, default: false },
         selected: { type: String, default: null },
         lastMoved: { type: Array, default: () => [] }, // puede ser 1 o 2 casillas

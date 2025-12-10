@@ -5,7 +5,9 @@
                 <h1 class="text-2xl font-semibold">Galeria de aperturas</h1>
                 <h2>Explora y edita tus aperturas de ajedrez</h2>
             </div>
-            <Btn variant="action" class="w-full sm:w-50" :loading="false">Crear apertura</Btn>
+            <Btn variant="action" class="w-full sm:w-50" :loading="false" @click="createOpeningModal.show = true"
+                >Crear apertura</Btn
+            >
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -19,6 +21,8 @@
                 <ChessBoard />
             </div>
         </div>
+        {{ createOpeningModal.show }}
+        <CreateOpeningModal v-model="createOpeningModal.show" :loading="createOpeningModal.loading" />
     </div>
 </template>
 
@@ -28,8 +32,16 @@
     // import { makeMove, INITIAL_FEN } from '@/utils/chess.js'
     import ChessBoard from '@/components/ChessBoard.vue'
     import Btn from '@/components/common/Btn.vue'
+
+    import CreateOpeningModal from './CreateOpeningModal.vue'
+
     const gallery = reactive({
         openings: [],
+        loading: false,
+    })
+
+    const createOpeningModal = reactive({
+        show: false,
         loading: false,
     })
     onMounted(async () => {

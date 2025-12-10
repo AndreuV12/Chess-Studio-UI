@@ -7,11 +7,6 @@
         options: {
             type: Array,
             required: true,
-            // Ejemplo:
-            // [
-            //   { label: 'Escaneo', value: 'scan', icon: 'ScanLine' },
-            //   { label: 'Lector USB', value: 'usb', icon: 'Usb' }
-            // ]
         },
     })
 
@@ -36,7 +31,6 @@
                 <component v-if="opt.icon" :is="opt.icon" class="w-4 h-4" />
                 {{ opt.label }}
             </div>
-            <!-- 👇 Si la opción tiene icono, lo mostramos -->
         </a>
     </div>
 </template>

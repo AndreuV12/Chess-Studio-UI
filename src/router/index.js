@@ -3,7 +3,7 @@ import MainLayout from '@/layout/MainLayout.vue'
 
 import Login from '@/views/Login.vue'
 import NotFound from '@/views/NotFound.vue'
-import Openings from '@/views/Openings.vue'
+import Openings from '@/views/Openings/OpeningsPage.vue'
 
 const routes = [
     // Rutas que usan el layout
