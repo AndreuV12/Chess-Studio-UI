@@ -31,12 +31,15 @@
 
 <script setup>
     import { onMounted, reactive } from 'vue'
+    import { useRouter } from 'vue-router'
+
     import { openings_api } from '@/api'
-    // import { makeMove, INITIAL_FEN } from '@/utils/chess.js'
     import ChessBoard from '@/components/shared/ChessBoardRenderer.vue'
     import Btn from '@/components/common/Btn.vue'
 
     import CreateOpeningModal from './CreateOpeningModal.vue'
+
+    const router = useRouter()
 
     const gallery = reactive({
         openings: [],
@@ -62,11 +65,11 @@
     }
     onMounted(async () => {
         gallery.loading = true
-        gallery.openings = await openings_api.get()
+        gallery.openings = await openings_api.getList()
         gallery.loading = false
     })
 
     function goToOpening(id) {
-        console.log(id)
+        router.push({ name: 'OpeningEditor', params: { id } })
     }
 </script>

@@ -3,7 +3,8 @@ import MainLayout from '@/layout/MainLayout.vue'
 
 import Login from '@/views/Login.vue'
 import NotFound from '@/views/NotFound.vue'
-import Openings from '@/views/Openings/OpeningsPage.vue'
+import OpeningsPage from '@/views/Openings/OpeningsPage.vue'
+import OpeningEditorPage from '@/views/OpeningEditor/OpeningEditorPage.vue'
 
 const routes = [
     // Rutas que usan el layout
@@ -12,9 +13,8 @@ const routes = [
         component: MainLayout,
         children: [
             { path: 'login', name: 'Login', component: Login },
-            { path: '', name: 'Home', component: Openings },
-            { path: 'openings/:id', name: 'Opening', component: Openings },
-            // { path: 'openings', name: 'Openings', component: Openings },
+            { path: '', name: 'Home', component: OpeningsPage },
+            { path: 'openings/:id', name: 'OpeningEditor', component: OpeningEditorPage },
         ],
     },
     // Rutas que van sin layout

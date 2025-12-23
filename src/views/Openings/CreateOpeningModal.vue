@@ -62,7 +62,7 @@
                         <!-- Nombre de la apertura -->
                         <label class="font-medium">Posición de referencia</label>
                         <span class="mb-2 text-sm text-gray-700/80 italic text-justify">
-                            Posición de que se mostrara en el listado de aperturas. Efectue movimientos para cambiar la
+                            Posición de que se mostrará en el listado de aperturas. Efectue movimientos para cambiar la
                             posición.</span
                         >
                         <div class="flex justify-center ms-12">
@@ -84,7 +84,7 @@
 
             <!-- FOOTER -->
             <template #footer>
-                <div class="flex justify-end gap-3">
+                <div class="flex justify-end gap-1">
                     <Btn variant="default" @click="show = false">Cancelar</Btn>
 
                     <Btn variant="create" :loading="loading" type="submit"> Crear </Btn>
