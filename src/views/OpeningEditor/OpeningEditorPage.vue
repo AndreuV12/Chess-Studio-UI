@@ -9,12 +9,14 @@
         </div>
 
         <div class="flex gap-4">
-            <ChessBoard v-model:fen="currentFEN" class="w-120" />
+            <EvalBar :evaluation="analysisResult?.[0]?.score" rotated />
+            {{ evaluation }}
+            <ChessBoard v-model:fen="currentFEN" class="w-160" />
 
-            <div class="bg-white rounded-lg border border-gray-200 shadow-md p-2 flex-1 overflow-y-auto max-h-140">
+            <div class="bg-white rounded-lg border border-gray-200 shadow-md p-2 flex-1 overflow-y-auto">
                 <span class="font-semibold">Movimientos</span>
 
-                <div class="flex flex-col gap-2">
+                <!-- <div class="flex flex-col gap-2">
                     <div
                         v-for="move of availableMoves"
                         :key="move.id"
@@ -23,7 +25,7 @@
                     >
                         <span>{{ move.uci }}</span>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="mt-4">
                     <span class="font-semibold">Análisis:</span>
@@ -34,9 +36,6 @@
                 </div>
             </div>
         </div>
-
-        last move: {{ lastMove }}
-        <pre>{{ movesMapping }}</pre>
     </div>
 </template>
 
@@ -49,6 +48,7 @@
 
     // Importamos tu clase Stockfish
     import { StockfishEngine } from '@/utils/_stockfish'
+    import EvalBar from '@/components/shared/EvalBar.vue'
 
     const engine = new StockfishEngine()
 
