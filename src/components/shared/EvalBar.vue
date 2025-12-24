@@ -1,10 +1,10 @@
 <template>
     <div
-        class="min-h-120 w-8 border-2 border-gray-800 rounded-4xl overflow-hidden flex flex-col"
+        class="min-h-120 w-6 border-1 border-black rounded-sm overflow-hidden flex flex-col"
         :class="{ 'justify-end': props.rotated }"
     >
         <!-- Barra de evaluación -->
-        <div class="bg-black transition-all duration-300" :style="{ height: percentageBlack + '%' }"></div>
+        <div class="bg-gray-800 transition-all duration-300" :style="{ height: percentageBlack + '%' }"></div>
     </div>
 </template>
 

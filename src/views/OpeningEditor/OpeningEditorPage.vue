@@ -9,11 +9,12 @@
         </div>
 
         <div class="flex gap-4">
-            <EvalBar :evaluation="analysisResult?.[0]?.score" rotated />
-            {{ evaluation }}
-            <ChessBoard v-model:fen="currentFEN" class="w-160" />
+            <div class="flex gap-2">
+                <EvalBar :evaluation="analysisResult?.[0]?.score" rotated />
+                <ChessBoard :fen="fen" @move="handleUciMoveFromBoard" class="h-160" />
+            </div>
 
-            <div class="bg-white rounded-lg border border-gray-200 shadow-md p-2 flex-1 overflow-y-auto">
+            <div class="bg-white rounded-lg border border-gray-200 shadow-md p-2 flex-1 overflow-y-auto h-160">
                 <span class="font-semibold">Movimientos</span>
 
                 <!-- <div class="flex flex-col gap-2">
@@ -36,6 +37,7 @@
                 </div>
             </div>
         </div>
+        <MoveNavigator :moves="opening.moves" :path="playedMoves" @moveClicked="handleMoveClicked"> </MoveNavigator>
     </div>
 </template>
 
@@ -49,18 +51,41 @@
     // Importamos tu clase Stockfish
     import { StockfishEngine } from '@/utils/_stockfish'
     import EvalBar from '@/components/shared/EvalBar.vue'
+    import MoveNavigator from './MoveNavigator.vue'
 
-    const engine = new StockfishEngine()
-
-    const analysisResult = ref(null)
+    const route = useRoute()
 
     // --- Datos de la apertura ---
-    const route = useRoute()
-    const opening = reactive({})
-    const playedMoves = ref([])
 
-    // --- Moves Mapping ---
-    const movesMapping = computed(() => {
+    const opening = reactive({})
+    const lastMove = ref(null)
+
+    const playedMoves = computed(() => {
+        if (!lastMove.value) return []
+
+        const path = []
+        let current = lastMove.value
+
+        // recorremos hacia atrás
+        while (current) {
+            path.unshift(current) // añadimos al inicio para mantener orden
+            current = opening.moves.find((m) => m.id === current.prev_move_id)
+        }
+
+        return path
+    })
+
+    const fen = computed(() => {
+        if (!lastMove.value) return INITIAL_FEN
+        return lastMove.value.fen_after
+    })
+
+    // --- Stockfish ---
+    const engine = new StockfishEngine()
+    const analysisResult = ref(null)
+
+    // ---Helper Moves Mapping ---
+    const parentMovesMapping = computed(() => {
         const map = {}
         if (!opening.moves) return {}
         opening.moves.forEach((move) => {
@@ -71,23 +96,36 @@
         return map
     })
 
-    const lastMove = computed(() => playedMoves.value[playedMoves.value.length - 1])
-    const availableMoves = computed(() => {
-        const key = lastMove.value ? lastMove.value.id : 'initial'
-        return movesMapping.value[key]
-    })
-
-    // Ahora será reactivo y controlado por un v-model desde fuera si quieres
-    const currentFEN = ref(INITIAL_FEN)
-
     // Click en movimiento
+    const handleUciMoveFromBoard = (moveUci) => {
+        if (!lastMove.value) {
+            // First move
+            const move = parentMovesMapping.value['initial'].find((move) => move.uci == moveUci)
+
+            if (move) {
+                playedMoves.value.push(move)
+                currentFEN.value = move.fen_after
+            } else {
+                alert('Movimiento no disponible')
+            }
+        } else {
+            parentMovesMapping.value[lastMove.value.id].find((move) => {
+                if (move.uci === moveUci) {
+                    playedMoves.value.push(move)
+                    currentFEN.value = move.fen_after
+                }
+            })
+        }
+        // playedMoves.value.push(move)
+        // currentFEN.value = move.fen_after
+    }
+
     const handleMoveClicked = (move) => {
-        playedMoves.value.push(move)
-        currentFEN.value = move.fen_after
+        lastMove.value = move
     }
 
     // --- Watch FEN y pedir análisis ---
-    watch(currentFEN, async (fen) => {
+    watch(fen, async (fen) => {
         if (!fen) return
         analysisResult.value = 'Calculando...'
         const result = await engine.analyze(fen)
@@ -100,5 +138,6 @@
         const id = route.params.id
         const res = await openings_api.getById(id)
         Object.assign(opening, res)
+        console.log(opening)
     })
 </script>
