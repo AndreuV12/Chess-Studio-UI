@@ -97,18 +97,18 @@
     })
 
     // Click en movimiento
-    const handleUciMoveFromBoard = (moveUci) => {
+    const handleUciMoveFromBoard = async (moveUci) => {
         const mappingKey = lastMove.value ? lastMove.value.id : 'initial'
-        console.log(mappingKey, parentMovesMapping.value[mappingKey])
-
         const move = parentMovesMapping.value[mappingKey]?.find((move) => move.uci == moveUci)
+
         if (move) {
             playedMoves.value.push(move)
+            lastMove.value = move
         } else {
-            alert('Movimiento no disponible: ' + moveUci + ' after ' + mappingKey)
+            const newMove = await openings_api.addMove(opening.id, { uci: moveUci, prev_move_id: lastMove.value?.id })
+            playedMoves.value.push(newMove)
+            lastMove.value = newMove
         }
-        // playedMoves.value.push(move)
-        // currentFEN.value = move.fen_after
     }
 
     const handleMoveClicked = (move) => {

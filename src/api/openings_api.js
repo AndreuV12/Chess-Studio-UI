@@ -15,4 +15,9 @@ export const openings_api = {
         const response = await api.get(`/openings/${id}`)
         return response.data
     },
+
+    async addMove(opening_id, { uci, prev_move_id }) {
+        const response = await api.post(`/openings/${opening_id}/move`, { uci, prev_move_id })
+        return response.data
+    },
 }
