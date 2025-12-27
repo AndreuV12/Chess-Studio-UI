@@ -10,7 +10,7 @@
 
         <div class="flex gap-4">
             <div class="flex gap-2">
-                <EvalBar :evaluation="analysisResult?.[0]?.score" rotated />
+                <EvalBar :evaluation="analysis.result?.[0]?.score" rotated />
                 <ChessBoard :fen="fen" :lastMove="lastMove?.uci" @move="handleUciMoveFromBoard" class="h-160" />
             </div>
 
@@ -30,10 +30,10 @@
 
                 <div class="mt-4">
                     <span class="font-semibold">Análisis:</span>
-                    <div v-if="analysisResult">
-                        <pre>{{ analysisResult }}</pre>
+                    <div v-if="!analysis.loading">
+                        <pre>{{ analysis?.result }}</pre>
                     </div>
-                    <div v-else>Sin análisis</div>
+                    <div v-else>Calculando</div>
                 </div>
             </div>
         </div>
@@ -82,7 +82,10 @@
 
     // --- Stockfish ---
     const engine = new StockfishEngine()
-    const analysisResult = ref(null)
+    const analysis = reactive({
+        result: null,
+        loading: false,
+    })
 
     // ---Helper Moves Mapping ---
     const parentMovesMapping = computed(() => {
@@ -115,12 +118,21 @@
         lastMove.value = move
     }
 
-    // --- Watch FEN y pedir análisis ---
     watch(fen, async (fen) => {
         if (!fen) return
-        analysisResult.value = 'Calculando...'
-        const result = await engine.analyze(fen)
-        analysisResult.value = result
+
+        try {
+            console.log('analisis start:')
+            analysis.loading = true
+            analysis.value = 'Analizando...'
+            const result = await engine.analyze(fen)
+            console.log('analisis end:', result)
+            analysis.result = result
+        } catch (e) {
+            console.error(e)
+        } finally {
+            analysis.loading = false
+        }
     })
 
     // --- Cargar apertura ---
