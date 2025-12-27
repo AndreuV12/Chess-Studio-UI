@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-    import { ref, watch, defineProps, reactive } from 'vue'
+    import { ref, watch, reactive } from 'vue'
     import BaseModal from '@/components/common/BaseModal.vue'
     import Input from '@/components/common/Input.vue'
     import Btn from '@/components/common/Btn.vue'
