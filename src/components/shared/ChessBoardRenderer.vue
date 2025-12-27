@@ -19,7 +19,7 @@
     const props = defineProps({
         fen: { type: String, default: INITIAL_FEN },
         selected: { type: String, default: null },
-        lastMoved: { type: Array, default: () => [] }, // puede ser 1 o 2 casillas
+        lastMoved: { type: String, default: null }, // UCI: e2e4
         rotated: { type: Boolean, default: false },
     })
 
@@ -41,6 +41,15 @@
         )
     })
 
+    const lastMovedSquares = computed(() => {
+        if (!props.lastMoved || props.lastMoved.length < 4) return []
+
+        const from = props.lastMoved.slice(0, 2).toUpperCase()
+        const to = props.lastMoved.slice(2, 4).toUpperCase()
+
+        return [from, to]
+    })
+
     function getSquareColor(square, index) {
         const row = Math.floor(index / 8)
         const col = index % 8
@@ -60,7 +69,7 @@
 
         if (square === props.selected) {
             return isLight ? selectedLight : selectedDark
-        } else if (props.lastMoved.includes(square)) {
+        } else if (lastMovedSquares.value.includes(square)) {
             return isLight ? lastMovedLight : lastMovedDark
         } else {
             return isLight ? lightColor : darkColor

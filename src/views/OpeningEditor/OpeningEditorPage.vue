@@ -11,7 +11,7 @@
         <div class="flex gap-4">
             <div class="flex gap-2">
                 <EvalBar :evaluation="analysisResult?.[0]?.score" rotated />
-                <ChessBoard :fen="fen" @move="handleUciMoveFromBoard" class="h-160" />
+                <ChessBoard :fen="fen" :lastMove="lastMove?.uci" @move="handleUciMoveFromBoard" class="h-160" />
             </div>
 
             <div class="bg-white rounded-lg border border-gray-200 shadow-md p-2 flex-1 overflow-y-auto h-160">
@@ -98,23 +98,14 @@
 
     // Click en movimiento
     const handleUciMoveFromBoard = (moveUci) => {
-        if (!lastMove.value) {
-            // First move
-            const move = parentMovesMapping.value['initial'].find((move) => move.uci == moveUci)
+        const mappingKey = lastMove.value ? lastMove.value.id : 'initial'
+        console.log(mappingKey, parentMovesMapping.value[mappingKey])
 
-            if (move) {
-                playedMoves.value.push(move)
-                currentFEN.value = move.fen_after
-            } else {
-                alert('Movimiento no disponible')
-            }
+        const move = parentMovesMapping.value[mappingKey]?.find((move) => move.uci == moveUci)
+        if (move) {
+            playedMoves.value.push(move)
         } else {
-            parentMovesMapping.value[lastMove.value.id].find((move) => {
-                if (move.uci === moveUci) {
-                    playedMoves.value.push(move)
-                    currentFEN.value = move.fen_after
-                }
-            })
+            alert('Movimiento no disponible: ' + moveUci + ' after ' + mappingKey)
         }
         // playedMoves.value.push(move)
         // currentFEN.value = move.fen_after
@@ -134,10 +125,10 @@
 
     // --- Cargar apertura ---
     onMounted(async () => {
-        await engine.init()
         const id = route.params.id
         const res = await openings_api.getById(id)
         Object.assign(opening, res)
         console.log(opening)
+        await engine.init()
     })
 </script>

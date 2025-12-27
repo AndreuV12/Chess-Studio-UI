@@ -18,7 +18,7 @@
                 @click="goToOpening(opening.id)"
             >
                 <span class="font-semibold">{{ opening.name }}</span>
-                <ChessBoard :fen="opening.fen" :rotated="opening.color = 'black'" />
+                <ChessBoard :fen="opening.fen" :rotated="opening.color == 'black'" />
             </div>
         </div>
         <CreateOpeningModal
