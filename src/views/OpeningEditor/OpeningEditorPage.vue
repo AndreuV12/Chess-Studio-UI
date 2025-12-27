@@ -10,8 +10,14 @@
 
         <div class="flex gap-4">
             <div class="flex gap-2">
-                <EvalBar :evaluation="analysis.result?.[0]?.score" rotated />
-                <ChessBoard :fen="fen" :lastMove="lastMove?.uci" @move="handleUciMoveFromBoard" class="h-160" />
+                <EvalBar :evaluation="analysis.result?.[0]?.score" :rotated="opening.color == 'black'" />
+                <ChessBoard
+                    :fen="fen"
+                    :lastMove="lastMove?.uci"
+                    :rotated="opening.color == 'black'"
+                    @move="handleUciMoveFromBoard"
+                    class="h-160"
+                />
             </div>
 
             <div class="bg-white rounded-lg border border-gray-200 shadow-md p-2 flex-1 overflow-y-auto h-160">
@@ -102,16 +108,17 @@
     // Click en movimiento
     const handleUciMoveFromBoard = async (moveUci) => {
         const mappingKey = lastMove.value ? lastMove.value.id : 'initial'
-        const move = parentMovesMapping.value[mappingKey]?.find((move) => move.uci == moveUci)
-
-        if (move) {
-            playedMoves.value.push(move)
-            lastMove.value = move
-        } else {
-            const newMove = await openings_api.addMove(opening.id, { uci: moveUci, prev_move_id: lastMove.value?.id })
-            playedMoves.value.push(newMove)
-            lastMove.value = newMove
+        let move = parentMovesMapping.value[mappingKey]?.find((move) => move.uci == moveUci)
+        if (!move) {
+            move = await openings_api.addMove(opening.id, { uci: moveUci, prev_move_id: lastMove.value?.id })
+            if (!parentMovesMapping.value[mappingKey]) {
+                parentMovesMapping.value[mappingKey] = []
+            }
+            parentMovesMapping.value[mappingKey].push(move)
+            opening.moves.push(move)
         }
+        playedMoves.value.push(move)
+        lastMove.value = move
     }
 
     const handleMoveClicked = (move) => {

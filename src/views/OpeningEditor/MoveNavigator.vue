@@ -9,11 +9,11 @@
                     v-if="move.id === path[path.length - 1]?.id"
                     class="bg-gray-200 rounded-lg px-2 py-1 font-semibold"
                 >
-                    {{ move.uci }}
+                    {{ move.san }}
                 </span>
 
                 <span v-else class="cursor-pointer hover:text-sorigue-primary p-1" @click="handleMoveClicked(move)">
-                    {{ move.uci }}
+                    {{ move.san }}
                 </span>
             </template>
         </div>
