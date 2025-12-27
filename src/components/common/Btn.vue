@@ -5,7 +5,7 @@
         :class="[
             'flex items-center justify-center gap-2 font-semibold',
             // padding y borde redondo por defecto
-            props.iconOnly ? 'p-2 w-10 h-10 rounded-full' : 'px-4 py-2 rounded-xl min-w-40',
+            props.iconOnly ? 'p-1 rounded-lg' : 'px-4 py-2 rounded-xl min-w-40',
             // variante de color
             variantClass,
             // clases adicionales

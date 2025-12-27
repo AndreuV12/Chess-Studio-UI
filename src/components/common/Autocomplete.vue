@@ -10,7 +10,7 @@
 
         </input>
 		<input
-			class=" pe-6 w-full min-h-[2rem] flex items-center bg-gray-100 rounded-md px-2 py-1 border border-transparent focus-within:border-gray-400 focus-within:outline-none text-sm truncate"
+			class="pe-6 w-full min-h-[2rem] flex items-center bg-gray-100 rounded-md px-2 py-1 border border-transparent focus-within:border-gray-400 focus-within:outline-none text-sm truncate"
 			:class="{ 'pe-10': clearable}"
             v-model="inputValue"
 			:placeholder="placeholder"

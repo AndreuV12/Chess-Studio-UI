@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-8 px-2">
+    <div class="flex flex-col gap-8 px-2 mb-40">
         <div class="flex justify-between items-end flex-wrap">
             <div class="flex flex-col gap-2">
                 <h1 class="text-2xl font-semibold">Editor de apertura</h1>
