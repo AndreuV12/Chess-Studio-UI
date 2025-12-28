@@ -20,29 +20,15 @@
                 />
             </div>
 
-            <div class="bg-white rounded-lg border border-gray-200 shadow-md p-2 flex-1 overflow-y-auto h-160">
-                <span class="font-semibold">Movimientos</span>
-
-                <!-- <div class="flex flex-col gap-2">
-                    <div
-                        v-for="move of availableMoves"
-                        :key="move.id"
-                        @click="handleMoveClicked(move)"
-                        class="cursor-pointer hover:bg-gray-100 rounded p-1"
-                    >
-                        <span>{{ move.uci }}</span>
-                    </div>
-                </div> -->
-
-                <div class="mt-4">
-                    <span class="font-semibold">Análisis:</span>
-                    <div v-if="!analysis.loading">
-                        <pre>{{ analysis?.result }}</pre>
-                    </div>
-                    <div v-else>Calculando</div>
-                </div>
-            </div>
+            <MovesTable
+                :moves="opening.moves"
+                :path="playedMoves"
+                :analysis="analysis"
+                @moveClicked="handleMoveClicked"
+            >
+            </MovesTable>
         </div>
+
         <MoveNavigator :moves="opening.moves" :path="playedMoves" @moveClicked="handleMoveClicked"> </MoveNavigator>
     </div>
 </template>
@@ -58,6 +44,7 @@
     import { StockfishEngine } from '@/utils/_stockfish'
     import EvalBar from '@/components/shared/EvalBar.vue'
     import MoveNavigator from './MoveNavigator.vue'
+    import MovesTable from './MovesTable.vue'
 
     const route = useRoute()
 

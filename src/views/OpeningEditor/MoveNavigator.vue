@@ -81,26 +81,6 @@
     const internalPath = ref([])
     const openDropdown = ref(null)
 
-    const toggleDropdown = (moveId) => {
-        openDropdown.value = openDropdown.value === moveId ? null : moveId
-    }
-
-    const getVariants = (move) => {
-        return parentMovesMapping.value[move.prev_move_id] || []
-    }
-
-    const hasVariants = (move) => {
-        return getVariants(move).length > 1
-    }
-
-    const selectVariant = (fromMove, selectedVariant) => {
-        const index = internalPath.value.findIndex((m) => m.id === fromMove.id)
-        const newBasePath = internalPath.value.slice(0, index)
-        newBasePath.push(selectedVariant)
-        internalPath.value = extendPathByDefault(newBasePath)
-        emit('moveClicked', selectedVariant)
-    }
-
     const parentMovesMapping = computed(() => {
         const map = {}
         if (!props.moves) return {}
@@ -128,6 +108,30 @@
         return result
     }
 
+    const toggleDropdown = (moveId) => {
+        openDropdown.value = openDropdown.value === moveId ? null : moveId
+    }
+
+    const getVariants = (move) => {
+        return parentMovesMapping.value[move.prev_move_id] || []
+    }
+
+    const hasVariants = (move) => {
+        return getVariants(move).length > 1
+    }
+
+    const selectVariant = (fromMove, selectedVariant) => {
+        const index = internalPath.value.findIndex((m) => m.id === fromMove.id)
+        const newBasePath = internalPath.value.slice(0, index)
+        newBasePath.push(selectedVariant)
+        internalPath.value = extendPathByDefault(newBasePath)
+        emit('moveClicked', selectedVariant)
+    }
+
+    const handleMoveClicked = (move) => {
+        emit('moveClicked', move)
+    }
+
     watch(
         [() => props.path, () => props.moves],
         ([newPath, _moves]) => {
@@ -135,8 +139,4 @@
         },
         { immediate: true },
     )
-
-    const handleMoveClicked = (move) => {
-        emit('moveClicked', move)
-    }
 </script>

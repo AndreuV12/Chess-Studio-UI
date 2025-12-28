@@ -80,7 +80,7 @@
                                 </div>
                             </div>
                             <div>
-                                <Btn class="btn btn-action" type="submit" :loading="form.loading">Entrar</Btn>
+                                <Btn class="w-full" type="submit" variant="action" :loading="form.loading">Entrar</Btn>
                             </div>
                         </div>
                     </form>
@@ -88,15 +88,10 @@
             </div>
         </div>
         <div class="relative hidden h-screen w-full items-center justify-center lg:col-span-1 lg:flex">
-            <!-- Fondo -->
-
-            <!-- Overlay opcional con opacidad -->
             <div class="absolute inset-0 bg-gray-700/20"></div>
-
-            <!-- Contenido centrado -->
             <div class="relative z-10 flex flex-col items-center text-center text-white w-100 px-4">
-                <h2 class="pt-5 text-2xl font-bold">Control de Presencia</h2>
-                <p class="mt-2 max-w-sm">Gestiona el tiempo y asistencia de tus empleados desde cualquier lugar</p>
+                <h2 class="pt-5 text-2xl font-bold">Chess Studio</h2>
+                <p class="mt-2 max-w-sm">El mejor sitio para aprender a jugar al ajedrez</p>
             </div>
         </div>
     </div>

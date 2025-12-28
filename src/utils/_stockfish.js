@@ -2,7 +2,7 @@ export class StockfishEngine {
     constructor({
         threads = 8,
         hash = 1024,
-        multipv = 2,
+        multipv = 4,
         depth = 12,
         path = '/stockfish/stockfish-17.1-single-a496a04.js',
         timeout = 5000, // timeout por defecto 5s

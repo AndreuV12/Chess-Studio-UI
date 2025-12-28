@@ -45,3 +45,14 @@ export function getBoardFromFEN(fen) {
     const { pieces } = importFEN(fen)
     return pieces
 }
+
+export function formatScore(score) {
+    if (score.type === 'mate') {
+        return score.value
+    }
+    if (score.type === 'cp') {
+        const value = score.value / 100
+
+        return `${value >= 0 ? '+' : ''}${value.toFixed(1)}`
+    }
+}
